@@ -1,4 +1,6 @@
+
 $(document).ready(function () {
+  //  global variables
   var player = ""
   var timer = 120;
   var questPoints = 0;
@@ -81,26 +83,28 @@ $(document).ready(function () {
     }
   ]
 
-  var highScore1 = localStorage.getItem("savedscore1");  
+  // scores stored in local storage after rounds have been playered are obtained here to populate highscore ticker
+  var highScore1 = localStorage.getItem("savedscore1");
   var highScore1 = (highScore1) ? JSON.parse(highScore1) : [];
-  
-  var highScore2 = localStorage.getItem("savedscore2");  
+
+  var highScore2 = localStorage.getItem("savedscore2");
   var highScore2 = (highScore2) ? JSON.parse(highScore2) : [];
 
-  var highScore3 = localStorage.getItem("savedscore3");  
+  var highScore3 = localStorage.getItem("savedscore3");
   var highScore3 = (highScore3) ? JSON.parse(highScore3) : [];
-  
-  var highScore4 = localStorage.getItem("savedscore4");  
+
+  var highScore4 = localStorage.getItem("savedscore4");
   var highScore4 = (highScore4) ? JSON.parse(highScore4) : [];
 
-  var highScore5 = localStorage.getItem("savedscore5");  
+  var highScore5 = localStorage.getItem("savedscore5");
   var highScore5 = (highScore5) ? JSON.parse(highScore5) : [];
 
   highScores.push(highScore1, highScore2, highScore3, highScore4, highScore5)
-  
+
+  // sorts array of highscores highes to lowest
   highScores.sort(sortFunction);
   console.log(highScores)
- 
+
   function sortFunction(a, b) {
     if (a[1] === b[1]) {
       return 0;
@@ -109,18 +113,19 @@ $(document).ready(function () {
       return (a[1] < b[1]) ? 1 : -1;
     }
   }
-  
+
+  // appends each name and score with its index +1
   $.each(highScores, function (k) {
     let highscoreDisplay = $("<li></li>");
-    let l =parseInt(k) + 1;
+    let l = parseInt(k) + 1;
     highscoreDisplay.text(l + " " + highScores[k]);
     $(".marquee-content-items").append(highscoreDisplay);
   });
-
-  $(function (){
-    $('.simple-marquee-container').SimpleMarquee(); 
+  // fires the marquee. open source plugin, not my code. Info in marquee.js
+  $(function () {
+    $('.simple-marquee-container').SimpleMarquee();
   });
-
+  //timer function to be called when quiz is started
   function setTime() {
     var timerInterval = setInterval(function () {
       timer--;
@@ -142,6 +147,7 @@ $(document).ready(function () {
     alert("Sorry, you are out of time!")
   }
 
+  // on click for start button. Saves player name, opens quiz box, starts timer and shows first question
   $("#startButton").click(function () {
     player = $("#nameEntry").val();
     if ($("#nameEntry").val() == "") {
@@ -157,7 +163,7 @@ $(document).ready(function () {
     showQuestion(question1);
   });
 
-
+  // first question is populated here with buttons for answers, clicking will call next questions
   function showQuestion(currentQuestion) {
     questionNumb.text(currentQuestion.number)
     questionClue.text(currentQuestion.question)
@@ -174,7 +180,9 @@ $(document).ready(function () {
 
 
   var questionsIndex = 0;
-
+  // question index is set to 0 and will iterate on every answer click, recalling this function. First button click data is comapre to correct answer and if awards points.
+  // then index is compared to pass in the appropriate question object to write questions. each clicked answer iterates through the array of question objects.
+  // once all questions written, collapse quiz box and open results box.
   $("#answers").click(function () {
 
     function nextQuestion() {
@@ -215,35 +223,25 @@ $(document).ready(function () {
     if (questionsIndex == 5) {
       $("#quizBox").addClass("collapse");
       $("#resultsBox").removeClass("collapse");
-    
-    
-    var q = localStorage.getItem("count", 0)
-    if (q < 10) {
-      q++;
-      localStorage.setItem("count", q);
-    } 
-    
-    
-   
-    var addscores = [];
-    addscores.push(player, currentScore)
-    localStorage.setItem(("savedscore")+JSON.stringify(q), JSON.stringify(addscores));
-    
-   
-    
-      
-      $(".marquee-content-items").empty();
-      $.each(highScores, function (k) {
-        let highscoreDisplay = $("<li></li>");
-        highscoreDisplay.text(highScores[k]);
-        $(".marquee-content-items").append(highscoreDisplay);                         
-       });
-       
-        
-    }
+      // when result box opens. a count is set in local storage for games played, and while be used to iterate saved scores
+      // confusion localstorage set. strings in the count to the end of the key savedcore so each player and score array has a different entry. 
+      // These are pulled on refresh at the start of the script to populate highscore ticker.
+      var q = localStorage.getItem("count", 0)
+      if (q < 10) {
+        q++;
+        localStorage.setItem("count", q);
+      }
 
+      var addscores = [];
+      addscores.push(player, currentScore)
+      localStorage.setItem(("savedscore") + JSON.stringify(q), JSON.stringify(addscores));
+
+    }
 
     nextQuestion();
   });
 
 });
+
+// Thats it. As mentioned in the read me the logic could be improved upon to make a better player experience, but I feel successful in accomplishing the code I did and make sure 
+// it functions as intended.
