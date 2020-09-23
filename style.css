@@ -1,0 +1,21 @@
+body {
+    font-family: 'Inconsolata', monospace;
+    color: #2c66ca;
+    background-color: #1e1e1e;
+}
+
+.functionColor {
+    color: #d0dcaa;
+}
+
+.foreground {
+    background-color: #333333;
+}
+
+.variableColor {
+    color: #9cdcfe;
+}
+
+.stringColor {
+    color: #9b351e;
+}
